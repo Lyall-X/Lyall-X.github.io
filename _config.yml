@@ -133,7 +133,7 @@ gitment:
 gitalk:
     owner: AstralDream
     repo: AstralDream.github.io
-    clientID: d2e1cbbd298958076462
+    clientID: 775db8b46c6cca4a51f5
     clientSecret: 4866bcc0bf08274b077630e8e303a18982c97b71
 # 在使用其它评论组件时可点击显示 Disqus
 lazy_load_disqus : false
