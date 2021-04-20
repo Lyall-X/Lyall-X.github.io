@@ -319,6 +319,8 @@ glibc，tcmalloc或者jemalloc 内存分配器缺陷：
 
 #### 如何设计内存池
 
+*网络设计基本都会用到内存池*
+
 满足条件：
 
 - 内存空间的大小是否可以调整
@@ -326,6 +328,97 @@ glibc，tcmalloc或者jemalloc 内存分配器缺陷：
 - 是否支持线程安全
 
 假设一种最简单的内存池实现方案，服务器消息结构体不会超过1k字节，对消息管理的时候，设计环形队列，一次性申请一大块内存，不是通过malloc申请的，而是直接申请一大块的buff数组，char megcache[1024*1024] = {0}，分成1024块的环形队列；在网络消息传递时，不使用new而是创建char[]，进行内存拷贝，在栈上创建防止内存碎片产生
+
+------
+
+#### RingBuffer
+
+类似于内核的kfifo设计
+
+```cpp
+struct ringbuffer {
+       void *data;            // 理所当然的是内存区
+       unsigned int size;      // 内存区的尺寸
+       unsigned int read_pos;  // 从内存区域开始读的位置
+       unsigned int write_pos;  // 往内存区域开始写的位置
+};
+```
+
+拥有读写指针，每次写入或读取数据前，需要判断剩余空间len的大小
+每次进行判断是否为2的幂次方，因为后面很多运算为与运算
+
+```cpp
+//判断是否是2的幂次方，n高位必须全为0，这样就没有相同的1，相与就是0
+static bool is_power_of_2(unsigned long n)
+{
+  return (n != 0 && ((n & (n - 1)) == 0));
+}
+```
+
+内存拷贝：
+
+- unsigned int ringbuffer_put(struct ringbuffer *ring_buf,  const char *buffer, unsigned int len) 
+- memcpy有两次是因为可能拷贝时内存到达容量最末尾
+
+zero copy(零拷贝):
+
+- ssize_t ringbuffer_from_dev(int fd, struct ringbuffer *ring_buf, unsigned int len)
+- 从fd文件描述符中读取buff数据，用户态协议栈
+
+适用场景：
+
+- 线程不安全
+- 单生产者，单消费者的形式 lock-free 无锁
+- 接收文件，一个线程读取网络上的文件内容，一个线程保存网络文件内容到文件
+- UDP组包，分包，文件传输，网络消息首发
+
+不足：
+
+- 大小不可调整
+- 线程不安全
+
+------
+
+#### multiple-ringbuffer
+
+多线程版RingBuffer
+
+```cpp
+typedef struct RingBuffer16_
+{
+    unsigned short write;
+    unsigned short read;
+    spinlock_t spin;                   // 自旋锁
+    void *array[RING_BUFFER_16_SIZE];  // 指针数组，65536个节点，每个节点指向一块内存区域，
+} RingBuffer16;
+```
+
+自旋锁：
+
+```cpp
+typedef volatile int spinlock_t;   // volatile修饰了spinlock_t这个变量，CPU频繁访问的变量，他也许会保存到CPU的缓存里，volatile的变量就一定需要到内存里去读。
+#define INIT_SPINLOCK(lock) lock = 0
+#define spinlock_lock(lock)                           \
+do {                                                  \
+    while (!__sync_bool_compare_and_swap(lock, 0, 1)) \ 如果等于0，那么就可以设置为1，返回true
+    sched_yield();                                \
+} while(0)
+#define spinlock_unlock(lock) \
+do {                          \
+    *lock = 0;                \
+} while(0)
+```
+
+man sched_yield：
+
+- 会让出当前线程的CPU占有权，然后把线程放到静态优先队列的尾端，然后一个新的线程会占用CPU
+- 可以使用另一个级别等于或高于当前线程的线程先运行。如果没有符合条件的线程，那么这个函数将会立刻返回然后继续执行当前线程的程序
+
+sleep：
+
+- 等待一定时间后等待CPU的调度，然后去获得CPU资源
+
+什么时候使用sched_yield：有策略的调用sched_yield()能在资源竞争情况很严重时，通过给其他的线程或进程运行机会的方式来提升程序的性能
 
 ------
 
