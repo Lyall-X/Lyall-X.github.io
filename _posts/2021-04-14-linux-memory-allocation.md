@@ -371,6 +371,7 @@ zero copy(零拷贝):
 - 单生产者，单消费者的形式 lock-free 无锁
 - 接收文件，一个线程读取网络上的文件内容，一个线程保存网络文件内容到文件
 - UDP组包，分包，文件传输，网络消息首发
+- data保存的是对象的内存拷贝，明确对象的长度，因为要进行内存拷贝
 
 不足：
 
@@ -395,6 +396,8 @@ typedef struct RingBuffer16_
 
 自旋锁：
 
+原子操作：__sync_bool_compare_and_swap
+
 ```cpp
 typedef volatile int spinlock_t;   // volatile修饰了spinlock_t这个变量，CPU频繁访问的变量，他也许会保存到CPU的缓存里，volatile的变量就一定需要到内存里去读。
 #define INIT_SPINLOCK(lock) lock = 0
@@ -408,6 +411,13 @@ do {                          \
     *lock = 0;                \
 } while(0)
 ```
+
+适用场景：
+
+- data保存的是指针数组
+- 不需要明确指针对象长度，因为数组存储的是指针
+
+
 
 man sched_yield：
 
@@ -546,3 +556,16 @@ inline bool check_read ()
 ```
 
 ![1618406875393](\images\posts\c++\1618406875393.png)
+
+------
+
+### 总结
+
+内存池优点：
+
+- 集中化存储消息 Cmsg *m = new CMSG
+  - 单线程消息传输，会导致消息缓冲区满，消息无法发送
+  - 对网络开发来讲，能提高应用处理网络IO的效率，可以用内存池将收到的消息放到池子中，缓冲流量洪峰
+- 节省了很多 malloc ， new 和 free，delete这些频繁的对内存操作造成的消耗
+- 内存池范例：ringbuffer，zmq，boost:pool nginx
+  - 内存池尽量避免多线程
