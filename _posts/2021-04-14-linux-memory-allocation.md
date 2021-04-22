@@ -448,11 +448,22 @@ sleep：
 
 #### ZeroMQ内存池
 
+ZeroMQ消息模型：
+
+- 一对一结对模型（Exclusive-Pair）
+- 请求回应模型（Request-Reply）
+- 发布订阅模型（Publish-Subscribe）
+- 推拉模型（Push-Pull）
+
 内存池特点：
 
 - 尽量少的申请内存，尽量使用即将释放的内存
 - 一个读线程，一个写线程，读写之间使用无锁解决互斥
 - 批量写入，预取机制，提高效率
+
+云风：[ZeroMQ模式](https://blog.codingnow.com/2011/02/zeromq_message_patterns.html)
+
+博客：[博客资料](https://www.cnblogs.com/zengzy/p/5122634.html)
 
 内存队列(内存池)：yqueue_t
 
@@ -568,4 +579,46 @@ inline bool check_read ()
   - 对网络开发来讲，能提高应用处理网络IO的效率，可以用内存池将收到的消息放到池子中，缓冲流量洪峰
 - 节省了很多 malloc ， new 和 free，delete这些频繁的对内存操作造成的消耗
 - 内存池范例：ringbuffer，zmq，boost:pool nginx
-  - 内存池尽量避免多线程
+  - 内存池要有多线程的支撑
+
+
+![Image](..\images\posts\c++\Image.png)
+
+
+**问题：**
+
+- 这样的chunk，要初始化多少个呢？
+  - spare_chunk如果为NULL
+    - 分配一个新的chunk
+    - 把新的chunk加入到chunk链表里
+  - 把end_chunk指向spare_chunk指向的内存
+
+预置条件：就是在调用pop的时候，如果begin_chunk所有的内存已经读完，那么就把spare_chunk 指向了end_chunk
+
+
+
+spare_chunk永远只保存最近一次待释放的内存块
+
+- 把即将要释放的内存保存起来，以便下次重复利用，达到了内存高效实用
+- 如果不需要那么多的内存（消费者的速率比生产者的速率要快），就是缩减内存空间
+- 如果需要更多的内存块（生产者的速率比消费者的速率要快），就分配更多的内存块
+
+
+
+动态调整内存空间：
+
+- ZMQ可以把多条消息组包成一个大的消息去发送 ： 多次写，一次性预取的机制
+- 保证把很多小的内存组成一个大包去发送。  把本地的socket的内存尽量去填满。最大利用了内核的空间。提高了网络发送的效率
+
+
+
+ZMQ -> 分布式集群下的开发：高并发
+
+- 网络收发就是消费者生产者模型
+- 集中化的存储了消息：Cmsg * m = new CMSG
+  - 对于网络开发来讲，能够提高应用处理网络IO的效率，缓解网络流量的洪峰
+- 节省了很多malloc、new和free、delete这些频繁的对内存操作说造成的消耗
+
+
+
+
