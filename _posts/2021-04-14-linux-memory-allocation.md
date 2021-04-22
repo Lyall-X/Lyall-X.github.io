@@ -582,7 +582,7 @@ inline bool check_read ()
   - 内存池要有多线程的支撑
 
 
-![Image](..\images\posts\c++\Image.png)
+![Image](\images\posts\c++\Image.png)
 
 
 **问题：**
