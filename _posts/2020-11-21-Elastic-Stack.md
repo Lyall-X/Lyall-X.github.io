@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Elastic Stack简介与安装
+title: Elastic Stack
 categories: 日志
 description: elk
 keywords: elk, elastic
