@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Elastic Stack简介与安装
-categories: Elastic Search
+categories: ElasticSearch
 description: elk
 keywords: elk, elastic
 ---
