@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  linux内存分配策略与内存池
-categories: c++
+title:  Linux内存分配策略与内存池
+categories: C++
 description: linux内存分配策略与内存池
 keywords: c++, memory
 ---
@@ -618,7 +618,6 @@ ZMQ -> 分布式集群下的开发：高并发
 - 集中化的存储了消息：Cmsg * m = new CMSG
   - 对于网络开发来讲，能够提高应用处理网络IO的效率，缓解网络流量的洪峰
 - 节省了很多malloc、new和free、delete这些频繁的对内存操作说造成的消耗
-
 
 
 
