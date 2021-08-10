@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: https://lyall-x.github.io
+url: https://Lyall-X.github.io
 date_format: "ordinal"
 title: 博客
 subtitle: "Coding"
@@ -11,7 +11,7 @@ keywords:
 timezone: Asia/Shanghai
 encoding: "utf-8"
 side_bar_repo_limit: 5
-repository: lyall-x/lyall-x.github.io
+repository: Lyall-X/Lyall-X.github.io
 # 对 css 和 js 资源的 cdn 加速配置
 cdn:
     jsdelivr:
@@ -45,7 +45,7 @@ highlight_theme: github
 author: Lyall Liu
 organization: 
 organization_url: 
-github_username: lyall-x
+github_username: Lyall-X
 location: ShangHai, China
 email: liuyue.barry@gmail.com
 
@@ -124,15 +124,15 @@ disqus:
     username: Lyall Liu
 # https://imsun.net/posts/gitment-introduction/
 gitment:
-    owner: lyall-x
-    repo: lyall-x.github.io
+    owner: Lyall-X
+    repo: Lyall-X.github.io
     oauth:
         client_id: 775db8b46c6cca4a51f5
         client_secret: 4866bcc0bf08274b077630e8e303a18982c97b71
 # https://github.com/gitalk/gitalk#install
 gitalk:
-    owner: lyall-x
-    repo: lyall-x.github.io
+    owner: Lyall-X
+    repo: Lyall-X.github.io
     clientID: 775db8b46c6cca4a51f5
     clientSecret: 4866bcc0bf08274b077630e8e303a18982c97b71
 # 在使用其它评论组件时可点击显示 Disqus
