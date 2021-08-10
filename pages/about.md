@@ -2,7 +2,7 @@
 layout: page
 title: About
 description: 打码改变世界
-keywords: liuyue, 蓝芷
+keywords: liuyue, Lyall Liu
 comments: true
 menu: 关于
 permalink: /about/

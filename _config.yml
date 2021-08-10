@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: https://astraldream.github.io
+url: https://lyall-x.github.io
 date_format: "ordinal"
 title: 博客
 subtitle: "Coding"
@@ -11,7 +11,7 @@ keywords:
 timezone: Asia/Shanghai
 encoding: "utf-8"
 side_bar_repo_limit: 5
-repository: AstralDream/AstralDream.github.io
+repository: lyall-x/lyall-x.github.io
 # 对 css 和 js 资源的 cdn 加速配置
 cdn:
     jsdelivr:
@@ -42,10 +42,10 @@ highlight_theme: github
 # ---------------- #
 #      Author      #
 # ---------------- #
-author: 蓝芷
+author: Lyall Liu
 organization: 
 organization_url: 
-github_username: AstralDream
+github_username: lyall-x
 location: ShangHai, China
 email: liuyue.barry@gmail.com
 
@@ -121,18 +121,18 @@ comments_provider: gitalk
 # !!!Important!!! Please modify infos below to yours
 # https://disqus.com
 disqus:
-    username: 蓝芷
+    username: Lyall Liu
 # https://imsun.net/posts/gitment-introduction/
 gitment:
-    owner: AstralDream
-    repo: AstralDream.github.io
+    owner: lyall-x
+    repo: lyall-x.github.io
     oauth:
         client_id: 775db8b46c6cca4a51f5
         client_secret: 4866bcc0bf08274b077630e8e303a18982c97b71
 # https://github.com/gitalk/gitalk#install
 gitalk:
-    owner: AstralDream
-    repo: AstralDream.github.io
+    owner: lyall-x
+    repo: lyall-x.github.io
     clientID: 775db8b46c6cca4a51f5
     clientSecret: 4866bcc0bf08274b077630e8e303a18982c97b71
 # 在使用其它评论组件时可点击显示 Disqus

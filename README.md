@@ -1,2 +1,2 @@
-# AstralDream.github.io
+# lyall-x.github.io
 个人博客
